@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -51,11 +52,26 @@
     color:#9a9a9a;
     margin:0 0 16px;
   }
-  .servico-nome{
-    font-size:1.3rem;
-    font-weight:700;
-    margin:0 0 6px;
+  
+  /* ESTILIZAÇÃO DOS ITENS DETALHADOS */
+  .lista-itens-servico{
+    margin:12px 0;
   }
+  .item-linha{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px dashed #2a2a2a;
+    font-size:1rem;
+  }
+  .item-linha:last-child{
+    border-bottom:none;
+  }
+  .item-desc{
+    color:#f2f2f2;
+  }
+
   .badge{
     display:inline-block;
     padding:8px 14px;
@@ -152,7 +168,6 @@
   <p class="aviso">Buscando os dados do seu pedido...</p>
 </main>
 
-<!-- Este arquivo é atualizado toda vez que um cliente é cadastrado/editado na Matriz -->
 <script src="dados-clientes.js"></script>
 <script>
 function formatarMoeda(valor) {
@@ -195,6 +210,21 @@ function copiarPix() {
   } else {
     copiarFallback();
   }
+}
+
+// Formata as linhas enviadas pela matriz para exibição limpa
+function renderizarItensServico(textoServico) {
+  if (!textoServico) return "<p>Nenhum item especificado.</p>";
+  
+  const linhas = textoServico.split('\n').filter(l => l.trim() !== '');
+  let html = '<div class="lista-itens-servico">';
+  
+  linhas.forEach(linha => {
+    html += `<div class="item-linha"><span class="item-desc">${linha}</span></div>`;
+  });
+  
+  html += '</div>';
+  return html;
 }
 
 function renderizarCliente(cliente, config) {
@@ -253,7 +283,7 @@ function renderizarCliente(cliente, config) {
       <div class="divisor"></div>
 
       <h2>Produto / Serviço</h2>
-      <p class="servico-nome">${cliente.servico}</p>
+      ${renderizarItensServico(cliente.servico)}
       ${imagensHtml ? `<div class="imagens">${imagensHtml}</div>` : ""}
     </div>
 
@@ -268,7 +298,6 @@ function renderizarCliente(cliente, config) {
   `;
 }
 
-// ---------- Início ----------
 (function () {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
