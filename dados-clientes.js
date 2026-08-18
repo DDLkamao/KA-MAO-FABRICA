@@ -1,7 +1,7 @@
 // Arquivo gerado pela Matriz de Cadastro - KA-MÃO
 // Substitua o conteúdo deste arquivo pelo que a matriz gerar
 // sempre que cadastrar, editar ou excluir um cliente.
-
+const TESTE_ARQUIVO = "Olá — arquivo encontrado!";
 const KAMAO_CONFIG = {
   "chavePix": ""
 };
