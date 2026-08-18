@@ -1,145 +1,415 @@
-// Arquivo gerado pela Matriz de Cadastro - KA-MÃO
-// Substitua o arquivo "dados-clientes.js" no GitHub por este conteúdo
-// sempre que cadastrar, editar ou excluir um cliente.
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriz de Cadastro - KA-MÃO</title>
+<style>
+:root{
+  --bg:#121212;
+  --card:#1c1c1c;
+  --card-border:#2a2a2a;
+  --laranja:#ff7a29;
+  --amarelo:#ffc93c;
+  --verde:#2ecc71;
+  --vermelho:#e74c3c;
+  --texto:#f2f2f2;
+  --texto-fraco:#9a9a9a;
+  --input-bg:#0f0f0f;
+}
 
-const KAMAO_CONFIG = {
-  "chavePix": "Na mão"
-};
+*{box-sizing:border-box;}
 
-const KAMAO_CLIENTES = [
-  {
-    "id": "003",
-    "nome": "Angela",
-    "contato": "210000800",
-    "endereco": "São Conrado",
-    "servico": "Serviço em Piso de madeira (consertos)",
-    "imagens": [],
-    "valor": 11000,
-    "condicoes": "Parcelado",
-    "parcelas": [
-      {
-        "valor": 2000,
-        "data": "2026-07-01",
-        "status": "pago"
-      },
-      {
-        "valor": 500,
-        "data": "2026-07-06",
-        "status": "pago"
-      },
-      {
-        "valor": 8500,
-        "data": "",
-        "status": "aguardando"
-      }
-    ]
-  },
-  {
-    "id": "001",
-    "nome": "Rodrigo",
-    "contato": "229790000",
-    "endereco": "Viúva Cláudia n 84",
-    "servico": "Mesa para escritório estilo carbonizado",
-    "imagens": [
-      "galeria/mesa-carbonizada.jpg"
-    ],
-    "valor": 600,
-    "condicoes": "Parcelado",
-    "parcelas": [
-      {
-        "valor": 170,
-        "data": "2026-07-06",
-        "status": "pago"
-      },
-      {
-        "valor": 100,
-        "data": "2026-07-06",
-        "status": "pago"
-      },
-      {
-        "valor": 330,
-        "data": "2026-07-13",
-        "status": "aguardando"
-      }
-    ]
-  },
-  {
-    "id": "004",
-    "nome": "Thiago",
-    "contato": "2190888",
-    "endereco": "Viúva Cláudia n 84",
-    "servico": "Uma porta e um portão",
-    "imagens": [],
-    "valor": 250,
-    "condicoes": "Parcelado",
-    "parcelas": [
-      {
-        "valor": 150.8,
-        "data": "2026-07-17",
-        "status": "pago"
-      },
-      {
-        "valor": 100,
-        "data": "2026-07-24",
-        "status": "pago"
-      }
-    ]
-  },
-  {
-    "id": "005",
-    "nome": "Ryan",
-    "contato": "2100000",
-    "endereco": "Viúva Cláudia n 84",
-    "servico": "2 portas \n2 caixonete/Aduela",
-    "imagens": [],
-    "valor": 300,
-    "condicoes": "Pago à vista",
-    "parcelas": [
-      {
-        "valor": 300,
-        "data": "",
-        "status": "pago"
-      }
-    ]
-  },
-  {
-    "id": "007",
-    "nome": "Anderson",
-    "contato": "21000000",
-    "endereco": "Viúva Cláudia n 84",
-    "servico": "Um banquinho",
-    "imagens": [
-      "galeria/tigre.jpg"
-    ],
-    "valor": 50,
-    "condicoes": "Pago à vista",
-    "parcelas": []
-  },
-  {
-    "id": "dr-albino",
-    "nome": "Albino",
-    "contato": "21",
-    "endereco": "Hotel Entre-mar",
-    "servico": "13 portas \nCortar : $100\nFurar fechadura $50 \nEntalhe dobradiças $50\nVerniz : 100",
-    "imagens": [],
-    "valor": 3900,
-    "condicoes": "Parcelado",
-    "parcelas": [
-      {
-        "valor": 3900,
-        "data": "2026-08-21",
-        "status": "aguardando"
-      },
-      {
-        "valor": 2000,
-        "data": "2026-08-21",
-        "status": "pago"
-      },
-      {
-        "valor": 1900,
-        "data": "2026-09-25",
-        "status": "pago"
-      }
-    ]
-  }
-];
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--texto);
+  font-family:-apple-system,Roboto,"Segoe UI",Arial,sans-serif;
+  padding-bottom:60px;
+}
+
+header{
+  text-align:center;
+  padding:28px 16px 18px;
+  border-bottom:1px solid var(--card-border);
+}
+
+header h1{
+  color:var(--laranja);
+  font-size:2rem;
+  letter-spacing:2px;
+  margin:0 0 4px;
+  font-weight:800;
+}
+
+header p{
+  margin:0;
+  color:var(--texto-fraco);
+  font-size:0.95rem;
+}
+
+main{
+  max-width:520px;
+  margin:0 auto;
+  padding:20px 16px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-left:4px solid var(--laranja);
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.card h2{
+  font-size:0.95rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--texto-fraco);
+  margin:0 0 16px;
+}
+
+label{
+  display:block;
+  font-size:0.85rem;
+  color:var(--texto-fraco);
+  margin:14px 0 6px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea,
+select{
+  width:100%;
+  background:var(--input-bg);
+  border:1px solid var(--card-border);
+  border-radius:8px;
+  padding:11px 12px;
+  color:var(--texto);
+  font-size:1rem;
+}
+
+textarea{resize:vertical; min-height:70px;}
+
+input::placeholder, textarea::placeholder{color:#555;}
+
+input[type="file"]{
+  width:100%;
+  color:var(--texto-fraco);
+  font-size:0.85rem;
+}
+
+.galeria-linha{
+  display:flex;
+  gap:8px;
+}
+.galeria-linha select{flex:1; min-width:0;}
+.galeria-linha .btn{
+  width:auto;
+  margin:0;
+  white-space:nowrap;
+  padding:11px 14px;
+}
+.galeria-info{
+  font-size:0.78rem;
+  color:var(--texto-fraco);
+  margin-top:8px;
+  line-height:1.4;
+}
+.galeria-info b{color:var(--laranja);}
+
+.imagens-preview{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.imagens-preview img{
+  width:64px;height:64px;object-fit:cover;
+  border-radius:8px;border:1px solid var(--card-border);
+}
+.imagens-preview .del-img{
+  position:relative;
+}
+.imagens-preview .del-img button{
+  position:absolute;top:-6px;right:-6px;
+  background:var(--vermelho);color:#fff;border:none;
+  border-radius:50%;width:20px;height:20px;font-size:12px;line-height:1;
+  cursor:pointer;
+}
+
+.parcela-row{
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:10px;
+  background:#161616;
+}
+.parcela-linha-a{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-bottom:8px;
+}
+.parcela-linha-a .parcela-valor{
+  flex:1;
+  min-width:0;
+}
+.parcela-row .mini-label{
+  font-size:0.75rem;
+  margin:0 0 4px;
+}
+.parcela-row .parcela-data{
+  width:100%;
+  margin-bottom:8px;
+}
+.parcela-row .parcela-status{
+  width:100%;
+}
+.parcela-row .rm-parcela{
+  flex:0 0 auto;
+  background:transparent;
+  border:1px solid var(--vermelho);
+  color:var(--vermelho);
+  border-radius:8px;
+  width:38px;height:38px;
+  font-size:1.1rem;
+  cursor:pointer;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  border:none;
+  border-radius:10px;
+  padding:12px 16px;
+  font-size:0.95rem;
+  font-weight:600;
+  cursor:pointer;
+  width:100%;
+  margin-top:8px;
+}
+.btn-add{
+  background:transparent;
+  border:1px dashed var(--laranja);
+  color:var(--laranja);
+}
+.btn-primary{
+  background:var(--laranja);
+  color:#1a1a1a;
+}
+.btn-secondary{
+  background:#2a2a2a;
+  color:var(--texto);
+}
+.btn-ghost{
+  background:transparent;
+  color:var(--texto-fraco);
+  border:1px solid var(--card-border);
+}
+
+.actions-row{
+  display:flex;
+  gap:10px;
+}
+.actions-row .btn{margin-top:16px;}
+
+.lista-clientes .cliente-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:var(--input-bg);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  padding:12px 14px;
+  margin-bottom:10px;
+}
+.cliente-item .info strong{display:block;font-size:1rem;}
+.cliente-item .info span{font-size:0.8rem;color:var(--texto-fraco);}
+.cliente-item .botoes{display:flex;gap:6px;}
+.cliente-item .botoes button{
+  border:none;border-radius:8px;padding:8px 10px;font-size:0.8rem;cursor:pointer;
+}
+.btn-editar{background:#2a2a2a;color:var(--texto);}
+.btn-excluir{background:var(--vermelho);color:#fff;}
+.btn-gerar{background:var(--verde);color:#0a2f19;font-weight:700;}
+
+.empty-msg{
+  color:var(--texto-fraco);
+  font-size:0.85rem;
+  text-align:center;
+  padding:10px 0;
+}
+
+.resumo-linha{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:1.05rem;
+  margin:10px 0;
+  color:var(--texto);
+}
+.resumo-linha span{font-weight:700;}
+.resumo-pago span{color:var(--verde);}
+.resumo-saldo span{color:var(--laranja);}
+
+.saida-wrap{display:none;}
+.saida-wrap.ativo{display:block;}
+.saida-wrap textarea{
+  width:100%;
+  height:260px;
+  font-family:monospace;
+  font-size:0.75rem;
+  background:#0a0a0a;
+}
+.saida-info{
+  font-size:0.8rem;
+  color:var(--texto-fraco);
+  margin-top:8px;
+  line-height:1.4;
+}
+.link-pronto{
+  word-break:break-all;
+  background:var(--input-bg);
+  border:1px solid var(--card-border);
+  border-radius:8px;
+  padding:12px;
+  font-size:0.85rem;
+  color:var(--laranja);
+  margin:6px 0 14px;
+}
+.divisor-saida{
+  height:1px;
+  background:var(--card-border);
+  margin:22px 0;
+}
+
+.toast{
+  position:fixed;
+  bottom:20px;left:50%;
+  transform:translateX(-50%);
+  background:var(--verde);
+  color:#0a2f19;
+  padding:10px 18px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:0.85rem;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s;
+  z-index:99;
+}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>KA-MÃO</h1>
+  <p>Matriz de Cadastro de Clientes</p>
+</header>
+
+<main>
+
+  <!-- CONFIGURAÇÕES DA LOJA -->
+  <div class="card">
+    <h2>Configurações da Loja</h2>
+    <label for="c-pix">Chave Pix (copia e cola)</label>
+    <input type="text" id="c-pix" placeholder="Cole aqui sua chave Pix">
+    <button type="button" class="btn btn-secondary" id="btn-salvar-pix">Salvar chave Pix</button>
+
+    <label for="c-link-base">Link do GitHub Pages (termina com /)</label>
+    <input type="text" id="c-link-base" placeholder="https://seu-usuario.github.io/seu-repositorio/">
+    <button type="button" class="btn btn-secondary" id="btn-salvar-link">Salvar link do GitHub Pages</button>
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <form class="card" id="form-cliente">
+    <h2 id="titulo-form">Novo Cliente</h2>
+
+    <label for="c-id">ID do cliente (vira o nome do link/arquivo)</label>
+    <input type="text" id="c-id" placeholder="ex: rodrigo-lages" required>
+
+    <label for="c-nome">Nome</label>
+    <input type="text" id="c-nome" placeholder="Nome do cliente" required>
+
+    <label for="c-contato">Contato</label>
+    <input type="text" id="c-contato" placeholder="Telefone / WhatsApp">
+
+    <label for="c-endereco">Endereço</label>
+    <input type="text" id="c-endereco" placeholder="Endereço do cliente">
+
+    <label for="c-servico">Serviço / Produto</label>
+    <textarea id="c-servico" placeholder="Ex: Mesa p/escritorio Carbonizado"></textarea>
+
+    <label for="c-galeria-select">Imagens (escolher da galeria)</label>
+    <div class="galeria-linha">
+      <select id="c-galeria-select"></select>
+      <button type="button" class="btn btn-add" id="btn-add-imagem">+ Adicionar</button>
+    </div>
+    <div class="imagens-preview" id="imagens-preview"></div>
+    <p class="galeria-info">Coloque as fotos na pasta <b>galeria</b> (do lado do index.html) e cadastre o nome de cada arquivo no arquivo <b>galeria.js</b>. Depois elas aparecem aqui na lista.</p>
+
+    <label for="c-valor">Valor Total (R$)</label>
+    <input type="text" inputmode="decimal" id="c-valor" placeholder="R$ 0,00" required>
+
+    <label for="c-condicoes">Condições</label>
+    <select id="c-condicoes">
+      <option value="Pago à vista">Pago à vista</option>
+      <option value="Parcelado">Parcelado</option>
+    </select>
+
+    <label>Pagamentos</label>
+    <div id="parcelas-container"></div>
+    <button type="button" class="btn btn-add" id="btn-add-parcela">+ Adicionar valor / parcela</button>
+
+    <div class="actions-row">
+      <button type="submit" class="btn btn-primary">Salvar Cliente</button>
+      <button type="button" class="btn btn-ghost" id="btn-novo">Limpar</button>
+    </div>
+  </form>
+
+  <!-- SAÍDA / GERAÇÃO -->
+  <div class="card saida-wrap" id="saida-wrap">
+    <h2>Link do Cliente</h2>
+    <p class="saida-info">Link pronto de <b id="nome-cliente-saida"></b>. Copie e envie para o cliente:</p>
+    <div class="link-pronto" id="link-pronto"></div>
+    <button type="button" class="btn btn-primary" id="btn-copiar-link">Copiar link</button>
+
+    <div class="divisor-saida"></div>
+
+    <h2>Arquivo dados-clientes.js</h2>
+    <p class="saida-info">Copie o código abaixo e cole no arquivo <b>dados-clientes.js</b> no GitHub, substituindo o conteúdo antigo. Faça isso toda vez que cadastrar, editar ou excluir um cliente.</p>
+    <textarea id="saida-dados"></textarea>
+    <button type="button" class="btn btn-secondary" id="btn-copiar-dados">Copiar código do dados-clientes.js</button>
+  </div>
+
+  <!-- LISTA DE CLIENTES -->
+  <div class="card">
+    <h2>Clientes Cadastrados</h2>
+    <div class="lista-clientes" id="lista-clientes">
+      <p class="empty-msg">Nenhum cliente cadastrado ainda.</p>
+    </div>
+  </div>
+
+  <!-- REGISTRO DE PAGAMENTO -->
+  <div class="card">
+    <h2>Registro de Pagamento</h2>
+    <p class="resumo-linha">Total de Entrada <span id="resumo-entrada">R$ 0,00</span></p>
+    <p class="resumo-linha resumo-pago">Total Pago <span id="resumo-pago">R$ 0,00</span></p>
+    <p class="resumo-linha resumo-saldo">Saldo a Receber <span id="resumo-saldo">R$ 0,00</span></p>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="galeria.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
