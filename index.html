@@ -168,15 +168,14 @@
   <p class="aviso">Buscando os dados do seu pedido...</p>
 </main>
 
-<script src="dados-clientes.js"></script>
+<script src="dados-clientes.js"></script
 <script>
- <script>
-    document.getElementById("conteudo").innerHTML =
-        "<p class='aviso'>" +
-        (typeof TESTE_ARQUIVO !== "undefined"
-            ? TESTE_ARQUIVO
-            : "ERRO: dados-clientes.js não foi encontrado") +
-        "</p>";
+<script>
+alert(
+  typeof TESTE_ARQUIVO !== "undefined"
+    ? TESTE_ARQUIVO
+    : "ARQUIVO NÃO ENCONTRADO"
+);
 </script>
 function formatarMoeda(valor) {
   const n = Number(valor) || 0;
