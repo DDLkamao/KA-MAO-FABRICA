@@ -220,6 +220,21 @@ input[type="file"]{
   flex:1;
   min-width:0;
 }
+.item-servico-qtd{
+  flex:0 0 66px;
+  text-align:center;
+  padding-left:6px;
+  padding-right:6px;
+}
+.item-servico-subtotal{
+  font-size:0.78rem;
+  color:var(--texto-fraco);
+  margin-top:6px;
+  text-align:right;
+}
+.item-servico-subtotal b{
+  color:var(--amarelo);
+}
 .rm-item-servico{
   flex:0 0 auto;
   background:transparent;
@@ -540,9 +555,24 @@ input[type="file"]{
     rows.forEach(row => {
       const desc     = row.querySelector('.item-servico-desc').value.trim();
       const valorStr = row.querySelector('.item-servico-valor').value.trim();
-      total += parseValor(valorStr);
+      const qtdEl    = row.querySelector('.item-servico-qtd');
+      let qtd = parseInt(qtdEl.value, 10);
+      if(!qtd || qtd < 1){ qtd = 1; }
+      qtdEl.value = qtd;
+
+      const valorUnit = parseValor(valorStr);
+      const subtotal = valorUnit * qtd;
+      total += subtotal;
+
+      const subEl = row.querySelector('.item-servico-subtotal b');
+      if(subEl){ subEl.textContent = formatarMoeda(subtotal); }
+
       if(desc || valorStr){
-        linhas.push(desc + (valorStr ? ': ' + valorStr : ''));
+        let linha = desc + (valorStr ? ': ' + valorStr : '');
+        if(qtd > 1){
+          linha += ' x ' + qtd + ' = ' + formatarMoeda(subtotal);
+        }
+        linhas.push(linha);
       }
     });
     totalEl.textContent = formatarMoeda(total);
@@ -552,7 +582,7 @@ input[type="file"]{
     campoValorTotal.value = total > 0 ? formatarMoeda(total) : '';
   }
 
-  function criarItem(desc, valor){
+  function criarItem(desc, valor, qtd){
     itemCount++;
     const row = document.createElement('div');
     row.className = 'item-servico-row';
@@ -563,8 +593,10 @@ input[type="file"]{
       '</div>' +
       '<div class="item-servico-linha2">' +
         '<input type="text" inputmode="decimal" class="item-servico-valor" placeholder="R$ 0,00" value="' + (valor ? valor.replace(/"/g,'&quot;') : '') + '">' +
+        '<input type="number" min="1" step="1" inputmode="numeric" class="item-servico-qtd" placeholder="Qtd" value="' + (qtd || '1') + '">' +
         '<button type="button" class="rm-item-servico" aria-label="Remover item">×</button>' +
-      '</div>';
+      '</div>' +
+      '<div class="item-servico-subtotal">Subtotal: <b>R$ 0,00</b></div>';
     container.appendChild(row);
 
     const campoValor = row.querySelector('.item-servico-valor');
@@ -575,6 +607,7 @@ input[type="file"]{
       aplicarMascaraMoeda(this);
       atualizar();
     });
+    row.querySelector('.item-servico-qtd').addEventListener('input', atualizar);
     row.querySelector('.rm-item-servico').addEventListener('click', function(){
       row.remove();
       renumerar();
@@ -585,7 +618,7 @@ input[type="file"]{
   }
 
   btnAdd.addEventListener('click', function(){
-    criarItem('', '');
+    criarItem('', '', '1');
   });
 
   // Reaproveita o texto que já estiver no campo oculto (ex: ao editar um cliente)
@@ -595,15 +628,21 @@ input[type="file"]{
     itemCount = 0;
     const linhas = (textoServico || '').split('\n').filter(l => l.trim() !== '');
     if(linhas.length === 0){
-      criarItem('', '');
+      criarItem('', '', '1');
       return;
     }
     linhas.forEach(linha => {
+      // Tenta casar o formato "desc: valor x qtd = subtotal"
+      const comQtd = linha.match(/^(.*):\s*(.+?)\s*x\s*(\d+)\s*=.*$/i);
+      if(comQtd){
+        criarItem(comQtd[1].trim(), comQtd[2].trim(), comQtd[3].trim());
+        return;
+      }
       const idx = linha.lastIndexOf(':');
       if(idx > -1){
-        criarItem(linha.slice(0, idx).trim(), linha.slice(idx + 1).trim());
+        criarItem(linha.slice(0, idx).trim(), linha.slice(idx + 1).trim(), '1');
       } else {
-        criarItem(linha.trim(), '');
+        criarItem(linha.trim(), '', '1');
       }
     });
   };
@@ -621,5 +660,4 @@ input[type="file"]{
 </script>
 
 </body>
-  </html>
-        
+</html>
