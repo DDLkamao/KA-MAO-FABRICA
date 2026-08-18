@@ -180,6 +180,68 @@ input[type="file"]{
   cursor:pointer;
 }
 
+/* ITENS DE SERVIÇO */
+.item-servico-row{
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:10px;
+  background:#161616;
+}
+.item-servico-linha{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+}
+.item-servico-num{
+  flex:0 0 auto;
+  color:var(--laranja);
+  font-weight:700;
+  font-size:0.9rem;
+  min-width:22px;
+}
+.item-servico-desc{
+  flex:1;
+  min-width:0;
+}
+.item-servico-linha2{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.item-servico-valor{
+  flex:1;
+  min-width:0;
+}
+.rm-item-servico{
+  flex:0 0 auto;
+  background:transparent;
+  border:1px solid var(--vermelho);
+  color:var(--vermelho);
+  border-radius:8px;
+  width:38px;height:38px;
+  font-size:1.1rem;
+  cursor:pointer;
+}
+.total-itens-linha{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px dashed var(--card-border);
+  font-size:1rem;
+}
+.total-itens-linha span:first-child{
+  color:var(--texto-fraco);
+}
+.total-itens-linha span:last-child{
+  color:var(--laranja);
+  font-weight:700;
+  font-size:1.1rem;
+}
+
 .btn{
   display:inline-flex;
   align-items:center;
@@ -344,8 +406,14 @@ input[type="file"]{
     <label for="c-endereco">Endereço</label>
     <input type="text" id="c-endereco" placeholder="Endereço do cliente">
 
-    <label for="c-servico">Serviço / Produto</label>
-    <textarea id="c-servico" placeholder="Ex: Mesa p/escritorio Carbonizado"></textarea>
+    <label>Serviço / Produto (itens)</label>
+    <div id="itens-servico-container"></div>
+    <button type="button" class="btn btn-add" id="btn-add-item">+ Adicionar item</button>
+    <div class="total-itens-linha">
+      <span>Total dos itens</span>
+      <span id="total-itens-servico">R$ 0,00</span>
+    </div>
+    <textarea id="c-servico" style="display:none;"></textarea>
 
     <label for="c-galeria-select">Imagens (escolher da galeria)</label>
     <div class="galeria-linha">
@@ -411,5 +479,119 @@ input[type="file"]{
 
 <script src="galeria.js"></script>
 <script src="script.js"></script>
+
+<script>
+/* ================================================================
+   MÓDULO INDEPENDENTE: Itens de Serviço/Produto (múltiplos itens)
+   Não depende de script.js. Mantém o campo oculto #c-servico
+   preenchido com o texto "descrição: valor" por linha, no mesmo
+   formato que o restante do sistema já espera nesse campo.
+================================================================ */
+(function(){
+  const container   = document.getElementById('itens-servico-container');
+  const btnAdd      = document.getElementById('btn-add-item');
+  const totalEl     = document.getElementById('total-itens-servico');
+  const hiddenField = document.getElementById('c-servico');
+  const btnNovo     = document.getElementById('btn-novo');
+  let itemCount = 0;
+
+  function parseValor(str){
+    if(!str) return 0;
+    let limpo = String(str).replace(/[^\d,.-]/g,'');
+    if(limpo.indexOf(',') > -1){
+      limpo = limpo.replace(/\./g,'').replace(',', '.');
+    }
+    const v = parseFloat(limpo);
+    return isNaN(v) ? 0 : v;
+  }
+
+  function formatarMoeda(v){
+    return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  }
+
+  function renumerar(){
+    container.querySelectorAll('.item-servico-row').forEach((row, i) => {
+      row.querySelector('.item-servico-num').textContent = (i + 1) + '.';
+    });
+  }
+
+  function atualizar(){
+    const rows = container.querySelectorAll('.item-servico-row');
+    let total = 0;
+    const linhas = [];
+    rows.forEach(row => {
+      const desc     = row.querySelector('.item-servico-desc').value.trim();
+      const valorStr = row.querySelector('.item-servico-valor').value.trim();
+      total += parseValor(valorStr);
+      if(desc || valorStr){
+        linhas.push(desc + (valorStr ? ': ' + valorStr : ''));
+      }
+    });
+    totalEl.textContent = formatarMoeda(total);
+    hiddenField.value = linhas.join('\n');
+  }
+
+  function criarItem(desc, valor){
+    itemCount++;
+    const row = document.createElement('div');
+    row.className = 'item-servico-row';
+    row.innerHTML =
+      '<div class="item-servico-linha">' +
+        '<span class="item-servico-num">' + itemCount + '.</span>' +
+        '<input type="text" class="item-servico-desc" placeholder="Descrição do item (ex: Cortar)" value="' + (desc ? desc.replace(/"/g,'&quot;') : '') + '">' +
+      '</div>' +
+      '<div class="item-servico-linha2">' +
+        '<input type="text" inputmode="decimal" class="item-servico-valor" placeholder="R$ 0,00" value="' + (valor ? valor.replace(/"/g,'&quot;') : '') + '">' +
+        '<button type="button" class="rm-item-servico" aria-label="Remover item">×</button>' +
+      '</div>';
+    container.appendChild(row);
+
+    row.querySelector('.item-servico-desc').addEventListener('input', atualizar);
+    row.querySelector('.item-servico-valor').addEventListener('input', atualizar);
+    row.querySelector('.rm-item-servico').addEventListener('click', function(){
+      row.remove();
+      renumerar();
+      atualizar();
+    });
+
+    atualizar();
+  }
+
+  btnAdd.addEventListener('click', function(){
+    criarItem('', '');
+  });
+
+  // Reaproveita o texto que já estiver no campo oculto (ex: ao editar um cliente)
+  // e monta os itens visuais a partir dele.
+  window.carregarItensServico = function(textoServico){
+    container.innerHTML = '';
+    itemCount = 0;
+    const linhas = (textoServico || '').split('\n').filter(l => l.trim() !== '');
+    if(linhas.length === 0){
+      criarItem('', '');
+      return;
+    }
+    linhas.forEach(linha => {
+      const idx = linha.lastIndexOf(':');
+      if(idx > -1){
+        criarItem(linha.slice(0, idx).trim(), linha.slice(idx + 1).trim());
+      } else {
+        criarItem(linha.trim(), '');
+      }
+    });
+  };
+
+  // Se script.js já tiver colocado algo no campo oculto antes deste script
+  // rodar (ex: modo edição carregado no load), aproveita; senão começa com 1 item vazio.
+  window.carregarItensServico(hiddenField.value);
+
+  if(btnNovo){
+    btnNovo.addEventListener('click', function(){
+      window.carregarItensServico(null);
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
