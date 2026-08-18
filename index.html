@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -52,7 +51,7 @@
     color:#9a9a9a;
     margin:0 0 16px;
   }
-  
+
   /* ESTILIZAÇÃO DOS ITENS DETALHADOS */
   .lista-itens-servico{
     margin:12px 0;
@@ -60,7 +59,8 @@
   .item-linha{
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    align-items:baseline;
+    gap:10px;
     padding:10px 0;
     border-bottom:1px dashed #2a2a2a;
     font-size:1rem;
@@ -70,7 +70,31 @@
   }
   .item-desc{
     color:#f2f2f2;
+    min-width:0;
   }
+  .item-qtd{
+    color:#9a9a9a;
+    font-size:0.82rem;
+    margin-left:6px;
+    white-space:nowrap;
+  }
+  .item-valor{
+    color:#ffc93c;
+    font-weight:700;
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  .item-total-linha{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid #2a2a2a;
+    font-size:1rem;
+  }
+  .item-total-linha span:first-child{color:#9a9a9a;}
+  .item-total-linha span:last-child{color:#ff7a29;font-weight:700;font-size:1.1rem;}
 
   .badge{
     display:inline-block;
@@ -150,10 +174,60 @@
     font-size:0.95rem;
     cursor:pointer;
   }
+  .btn-imprimir{
+    display:block;
+    width:100%;
+    max-width:520px;
+    margin:0 auto 4px;
+    border:none;
+    border-radius:10px;
+    padding:13px;
+    background:#ff7a29;
+    color:#1a1a1a;
+    font-weight:700;
+    font-size:0.95rem;
+    cursor:pointer;
+  }
+  .barra-imprimir{
+    max-width:520px;
+    margin:18px auto 0;
+    padding:0 16px;
+  }
   .aviso{
     text-align:center;
     color:#9a9a9a;
     padding:60px 20px;
+  }
+
+  /* ---------- IMPRESSÃO / PDF ---------- */
+  @media print{
+    body{background:#fff;color:#111;padding-bottom:0;}
+    header{border-bottom:1px solid #ccc;}
+    header p{color:#333;}
+    .card{
+      background:#fff;
+      border:1px solid #ccc;
+      border-left:4px solid #ff7a29;
+      box-shadow:none;
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    .card h2{color:#555;}
+    .item-linha{border-bottom:1px dashed #ccc;}
+    .item-desc{color:#111;}
+    .item-qtd{color:#555;}
+    .item-valor{color:#b35400;}
+    .item-total-linha{border-top:1px solid #ccc;}
+    .item-total-linha span:first-child{color:#555;}
+    .item-total-linha span:last-child{color:#b35400;}
+    .info-linha{color:#222;}
+    .info-linha b{color:#000;}
+    .parcela-data{color:#555;}
+    .valor-saldo{color:#b35400;}
+    .barra-imprimir,
+    .btn-imprimir,
+    .btn-copiar-pix{display:none !important;}
+    .aviso{color:#555;}
   }
 </style>
 </head>
@@ -164,19 +238,16 @@
   <p>Carregando pedido...</p>
 </header>
 
+<div class="barra-imprimir">
+  <button type="button" class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / Salvar em PDF</button>
+</div>
+
 <main id="conteudo">
   <p class="aviso">Buscando os dados do seu pedido...</p>
 </main>
 
-<script src="dados-clientes.js"></script
+<script src="dados-clientes.js"></script>
 <script>
-<script>
-alert(
-  typeof TESTE_ARQUIVO !== "undefined"
-    ? TESTE_ARQUIVO
-    : "ARQUIVO NÃO ENCONTRADO"
-);
-</script>
 function formatarMoeda(valor) {
   const n = Number(valor) || 0;
   return n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -219,18 +290,49 @@ function copiarPix() {
   }
 }
 
-// Formata as linhas enviadas pela matriz para exibição limpa
+// Extrai desc / valor unitário / qtd / subtotal de uma linha vinda da Matriz.
+// Formatos aceitos:
+//   "Descrição: R$ 10,00"
+//   "Descrição: R$ 10,00 x 3 = R$ 30,00"
+//   "Descrição" (sem valor)
+function interpretarLinhaItem(linha) {
+  const comQtd = linha.match(/^(.*):\s*(.+?)\s*x\s*(\d+)\s*=\s*(.+)$/i);
+  if (comQtd) {
+    return {
+      desc: comQtd[1].trim(),
+      qtd: comQtd[3].trim(),
+      valorExibido: comQtd[4].trim(),
+    };
+  }
+  const idx = linha.lastIndexOf(":");
+  if (idx > -1) {
+    return {
+      desc: linha.slice(0, idx).trim(),
+      qtd: null,
+      valorExibido: linha.slice(idx + 1).trim(),
+    };
+  }
+  return { desc: linha.trim(), qtd: null, valorExibido: null };
+}
+
+// Formata as linhas enviadas pela matriz para exibição limpa, alinhando
+// descrição à esquerda e valor à direita (com a quantidade quando houver).
 function renderizarItensServico(textoServico) {
   if (!textoServico) return "<p>Nenhum item especificado.</p>";
-  
-  const linhas = textoServico.split('\n').filter(l => l.trim() !== '');
+
+  const linhas = textoServico.split("\n").filter((l) => l.trim() !== "");
   let html = '<div class="lista-itens-servico">';
-  
-  linhas.forEach(linha => {
-    html += `<div class="item-linha"><span class="item-desc">${linha}</span></div>`;
+
+  linhas.forEach((linha) => {
+    const { desc, qtd, valorExibido } = interpretarLinhaItem(linha);
+    html += `
+      <div class="item-linha">
+        <span class="item-desc">${desc}${qtd ? `<span class="item-qtd">(x${qtd})</span>` : ""}</span>
+        ${valorExibido ? `<span class="item-valor">${valorExibido}</span>` : ""}
+      </div>`;
   });
-  
-  html += '</div>';
+
+  html += "</div>";
   return html;
 }
 
@@ -311,7 +413,6 @@ function renderizarCliente(cliente, config) {
   const lista = typeof KAMAO_CLIENTES !== "undefined" ? KAMAO_CLIENTES : [];
   const config = typeof KAMAO_CONFIG !== "undefined" ? KAMAO_CONFIG : {};
   const cliente = lista.find((c) => c.id === id);
-
 
   if (!id) {
     document.getElementById("conteudo").innerHTML = '<p class="aviso">Link incompleto. Peça o link correto para a loja.</p>';
