@@ -96,6 +96,12 @@ textarea{resize:vertical; min-height:70px;}
 
 input::placeholder, textarea::placeholder{color:#555;}
 
+input[readonly]{
+  color:var(--laranja);
+  font-weight:700;
+  background:#161616;
+}
+
 input[type="file"]{
   width:100%;
   color:var(--texto-fraco);
@@ -423,8 +429,8 @@ input[type="file"]{
     <div class="imagens-preview" id="imagens-preview"></div>
     <p class="galeria-info">Coloque as fotos na pasta <b>galeria</b> (do lado do index.html) e cadastre o nome de cada arquivo no arquivo <b>galeria.js</b>. Depois elas aparecem aqui na lista.</p>
 
-    <label for="c-valor">Valor Total (R$)</label>
-    <input type="text" inputmode="decimal" id="c-valor" placeholder="R$ 0,00" required>
+    <label for="c-valor">Valor Total (R$) — preenchido automaticamente pela soma dos itens</label>
+    <input type="text" inputmode="decimal" id="c-valor" placeholder="R$ 0,00" readonly required>
 
     <label for="c-condicoes">Condições</label>
     <select id="c-condicoes">
@@ -492,6 +498,7 @@ input[type="file"]{
   const btnAdd      = document.getElementById('btn-add-item');
   const totalEl     = document.getElementById('total-itens-servico');
   const hiddenField = document.getElementById('c-servico');
+  const campoValorTotal = document.getElementById('c-valor');
   const btnNovo     = document.getElementById('btn-novo');
   let itemCount = 0;
 
@@ -507,6 +514,17 @@ input[type="file"]{
 
   function formatarMoeda(v){
     return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  }
+
+  // Aplica máscara de moeda (R$ 0,00) enquanto o usuário digita
+  function aplicarMascaraMoeda(input){
+    const digitos = input.value.replace(/\D/g, '');
+    if(digitos === ''){
+      input.value = '';
+      return;
+    }
+    const numero = parseInt(digitos, 10) / 100;
+    input.value = formatarMoeda(numero);
   }
 
   function renumerar(){
@@ -529,6 +547,9 @@ input[type="file"]{
     });
     totalEl.textContent = formatarMoeda(total);
     hiddenField.value = linhas.join('\n');
+
+    // Transfere o total dos itens para o campo Valor Total (R$)
+    campoValorTotal.value = total > 0 ? formatarMoeda(total) : '';
   }
 
   function criarItem(desc, valor){
@@ -546,8 +567,14 @@ input[type="file"]{
       '</div>';
     container.appendChild(row);
 
+    const campoValor = row.querySelector('.item-servico-valor');
+    if(campoValor.value){ aplicarMascaraMoeda(campoValor); }
+
     row.querySelector('.item-servico-desc').addEventListener('input', atualizar);
-    row.querySelector('.item-servico-valor').addEventListener('input', atualizar);
+    row.querySelector('.item-servico-valor').addEventListener('input', function(){
+      aplicarMascaraMoeda(this);
+      atualizar();
+    });
     row.querySelector('.rm-item-servico').addEventListener('click', function(){
       row.remove();
       renumerar();
@@ -594,4 +621,5 @@ input[type="file"]{
 </script>
 
 </body>
-</html>
+  </html>
+        
