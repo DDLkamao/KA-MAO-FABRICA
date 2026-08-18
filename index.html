@@ -577,9 +577,17 @@ input[type="file"]{
     });
     totalEl.textContent = formatarMoeda(total);
     hiddenField.value = linhas.join('\n');
+    hiddenField.dispatchEvent(new Event('input', { bubbles: true }));
+    hiddenField.dispatchEvent(new Event('change', { bubbles: true }));
 
     // Transfere o total dos itens para o campo Valor Total (R$)
     campoValorTotal.value = total > 0 ? formatarMoeda(total) : '';
+    // Dispara eventos para que o script.js (que controla o módulo de
+    // parcelas/condições) perceba a mudança de valor, já que setar
+    // ".value" via JS não dispara input/change sozinho.
+    campoValorTotal.dispatchEvent(new Event('input', { bubbles: true }));
+    campoValorTotal.dispatchEvent(new Event('change', { bubbles: true }));
+    campoValorTotal.dispatchEvent(new Event('blur', { bubbles: true }));
   }
 
   function criarItem(desc, valor, qtd){
