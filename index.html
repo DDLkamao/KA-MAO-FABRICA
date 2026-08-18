@@ -304,6 +304,12 @@ function renderizarCliente(cliente, config) {
   const lista = typeof KAMAO_CLIENTES !== "undefined" ? KAMAO_CLIENTES : [];
   const config = typeof KAMAO_CONFIG !== "undefined" ? KAMAO_CONFIG : {};
   const cliente = lista.find((c) => c.id === id);
+ alert(
+  "ID recebido: " + id +
+  "\nQuantidade de clientes: " + lista.length +
+  "\nPrimeiro cliente: " +
+  (lista.length ? JSON.stringify(lista[0]) : "NENHUM")
+);
 
   if (!id) {
     document.getElementById("conteudo").innerHTML = '<p class="aviso">Link incompleto. Peça o link correto para a loja.</p>';
