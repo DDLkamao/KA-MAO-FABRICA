@@ -1,11 +1,4 @@
 // Arquivo gerado pela Matriz de Cadastro - KA-MÃO
-// Substitua o conteúdo deste arquivo pelo que a matriz gerar
-// sempre que cadastrar, editar ou excluir um cliente.
-const TESTE_ARQUIVO = "Olá — arquivo encontrado!";
-const KAMAO_CONFIG = {
-  "chavePix": ""
-};
-// Arquivo gerado pela Matriz de Cadastro - KA-MÃO
 // Substitua o arquivo "dados-clientes.js" no GitHub por este conteúdo
 // sempre que cadastrar, editar ou excluir um cliente.
 
@@ -123,11 +116,11 @@ const KAMAO_CLIENTES = [
     "parcelas": []
   },
   {
-    "id": "albino",
+    "id": "008",
     "nome": "Dr-Albino",
     "contato": "21",
     "endereco": "Hotel Entre-mar",
-    "servico": "Cortes em portas: R$ 50,00 x 13 = R$ 650,00\nFurar fechadura: R$ 70,00 x 13 = R$ 910,00\nEntalhe dobradiças: R$ 35,00 x 13 = R$ 455,00\nLixar p Verniz: R$ 35,00 x 13 = R$ 455,00\nAplicar Verniz: R$ 70,00 x 13 = R$ 910,00\nInstalação das portas: R$ 50,00 x 13 = R$ 650,00",
+    "servico": "Cortes em portas: R$ 50,00 x 13 = R$ 650,00\nFurar fechadura: R$ 70,00 x 13 = R$ 910,00\nEntalhe dobradiças: R$ 35,00 x 13 = R$ 455,00\nLixar p Verniz: R$ 35,00 x 13 = R$ 455,00\nAplicar Verniz: R$ 70,00 x 13 = R$ 910,00\nInstalação das portas: R$ 50,00 x 13 = R$ 650,00",
     "imagens": [],
     "valor": 4030,
     "condicoes": "Parcelado",
@@ -145,6 +138,4 @@ const KAMAO_CLIENTES = [
     ]
   }
 ];
-
-
-const KAMAO_CLIENTES = [];
+  
