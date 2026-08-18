@@ -170,6 +170,14 @@
 
 <script src="dados-clientes.js"></script>
 <script>
+ <script>
+    document.getElementById("conteudo").innerHTML =
+        "<p class='aviso'>" +
+        (typeof TESTE_ARQUIVO !== "undefined"
+            ? TESTE_ARQUIVO
+            : "ERRO: dados-clientes.js não foi encontrado") +
+        "</p>";
+</script>
 function formatarMoeda(valor) {
   const n = Number(valor) || 0;
   return n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
