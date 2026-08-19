@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acompanhamento de Pedido - KA-MÃO</title>
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#121212;
+    color:#f2f2f2;
+    font-family:-apple-system,Roboto,"Segoe UI",Arial,sans-serif;
+    padding-bottom:40px;
+  }
+  header{
+    text-align:center;
+    padding:36px 20px 20px;
+    border-bottom:1px solid #2a2a2a;
+  }
+  header h1{
+    color:#ff7a29;
+    font-size:2.4rem;
+    letter-spacing:3px;
+    margin:0 0 10px;
+    font-weight:800;
+  }
+  header p{
+    margin:0;
+    font-size:1.1rem;
+  }
+  main{
+    max-width:520px;
+    margin:0 auto;
+    padding:20px 16px;
+  }
+  .card{
+    background:#1c1c1c;
+    border:1px solid #2a2a2a;
+    border-radius:14px;
+    padding:22px;
+    margin-bottom:22px;
+    border-left:4px solid #ff7a29;
+  }
+  .card.amarelo{border-left-color:#ffc93c;}
+  .card.verde{border-left-color:#2ecc71;}
+  .card h2{
+    font-size:0.95rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#9a9a9a;
+    margin:0 0 16px;
+  }
+
+  /* ESTILIZAÇÃO DOS ITENS DETALHADOS */
+  .lista-itens-servico{
+    margin:12px 0;
+  }
+  .item-linha{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:10px;
+    padding:10px 0;
+    border-bottom:1px dashed #2a2a2a;
+    font-size:1rem;
+  }
+  .item-linha:last-child{
+    border-bottom:none;
+  }
+  .item-desc{
+    color:#f2f2f2;
+    min-width:0;
+  }
+  .item-qtd{
+    color:#9a9a9a;
+    font-size:0.82rem;
+    margin-left:6px;
+    white-space:nowrap;
+  }
+  .item-valor{
+    color:#ffc93c;
+    font-weight:700;
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  .item-total-linha{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid #2a2a2a;
+    font-size:1rem;
+  }
+  .item-total-linha span:first-child{color:#9a9a9a;}
+  .item-total-linha span:last-child{color:#ff7a29;font-weight:700;font-size:1.1rem;}
+
+  .badge{
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:0.8rem;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .badge-verde{background:#123a24;color:#2ecc71;}
+  .badge-laranja{background:#3a2812;color:#ff7a29;}
+  .imagens{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:14px;
+  }
+  .imagens img{
+    width:90px;height:90px;object-fit:cover;
+    border-radius:10px;border:1px solid #2a2a2a;
+  }
+  .info-linha{margin:6px 0;color:#d8d8d8;}
+  .info-linha b{color:#f2f2f2;}
+  .divisor{
+    height:1px;
+    background:#2a2a2a;
+    margin:18px 0;
+  }
+  .valor-total{
+    font-size:1.05rem;
+    margin:14px 0 4px;
+  }
+  .valor-saldo{
+    font-size:1.05rem;
+    margin:0 0 16px;
+    color:#ff7a29;
+  }
+  .parcela{
+    display:flex;
+    gap:12px;
+    margin-bottom:18px;
+    position:relative;
+  }
+  .parcela:last-child{margin-bottom:0;}
+  .ponto{
+    width:14px;height:14px;border-radius:50%;
+    margin-top:4px;flex:0 0 auto;
+  }
+  .ponto-verde{background:#2ecc71;}
+  .ponto-amarelo{background:#ffc93c;}
+  .parcela-texto{flex:1;min-width:0;}
+  .parcela-linha1{
+    font-size:1.05rem;
+    font-weight:600;
+  }
+  .parcela-valor-txt{white-space:nowrap;}
+  .status-pago{color:#2ecc71;font-weight:700;}
+  .status-aguardando{color:#ffc93c;font-weight:700;}
+  .parcela-data{color:#9a9a9a;font-size:0.85rem;margin-top:4px;}
+  .pix-chave{
+    word-break:break-all;
+    background:#0f0f0f;
+    border:1px solid #2a2a2a;
+    border-radius:8px;
+    padding:12px;
+    font-size:0.95rem;
+    margin:0 0 14px;
+  }
+  .btn-copiar-pix{
+    width:100%;
+    border:none;
+    border-radius:10px;
+    padding:12px;
+    background:#2ecc71;
+    color:#0a2f19;
+    font-weight:700;
+    font-size:0.95rem;
+    cursor:pointer;
+  }
+  .btn-imprimir{
+    display:block;
+    width:100%;
+    max-width:520px;
+    margin:0 auto 4px;
+    border:none;
+    border-radius:10px;
+    padding:13px;
+    background:#ff7a29;
+    color:#1a1a1a;
+    font-weight:700;
+    font-size:0.95rem;
+    cursor:pointer;
+  }
+  .barra-imprimir{
+    max-width:520px;
+    margin:18px auto 0;
+    padding:0 16px;
+  }
+  .aviso{
+    text-align:center;
+    color:#9a9a9a;
+    padding:60px 20px;
+  }
+
+  /* ---------- IMPRESSÃO / PDF ---------- */
+  @media print{
+    body{background:#fff;color:#111;padding-bottom:0;}
+    header{border-bottom:1px solid #ccc;}
+    header p{color:#333;}
+    .card{
+      background:#fff;
+      border:1px solid #ccc;
+      border-left:4px solid #ff7a29;
+      box-shadow:none;
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    .card h2{color:#555;}
+    .item-linha{border-bottom:1px dashed #ccc;}
+    .item-desc{color:#111;}
+    .item-qtd{color:#555;}
+    .item-valor{color:#b35400;}
+    .item-total-linha{border-top:1px solid #ccc;}
+    .item-total-linha span:first-child{color:#555;}
+    .item-total-linha span:last-child{color:#b35400;}
+    .info-linha{color:#222;}
+    .info-linha b{color:#000;}
+    .parcela-data{color:#555;}
+    .valor-saldo{color:#b35400;}
+    .barra-imprimir,
+    .btn-imprimir,
+    .btn-copiar-pix{display:none !important;}
+    .aviso{color:#555;}
+  }
+</style>
+</head>
+<body>
+
+<header id="cabecalho">
+  <h1>KA-MÃO</h1>
+  <p>Carregando pedido...</p>
+</header>
+
+<div class="barra-imprimir">
+  <button type="button" class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / Salvar em PDF</button>
+</div>
+
+<main id="conteudo">
+  <p class="aviso">Buscando os dados do seu pedido...</p>
+</main>
+
+<script src="dados-clientes.js"></script>
+<script>
+function formatarMoeda(valor) {
+  const n = Number(valor) || 0;
+  return n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatarDataBR(isoDate) {
+  if (!isoDate) return "";
+  const [ano, mes, dia] = isoDate.split("-");
+  return `${dia}/${mes}/${ano.slice(2)}`;
+}
+
+function calcularTotalPago(cliente) {
+  const parcelas = cliente.parcelas || [];
+  const somaParcelasPagas = parcelas.reduce(
+    (acc, p) => (p.status === "pago" ? acc + Number(p.valor) : acc),
+    0
+  );
+  if (cliente.condicoes === "Pago à vista" && parcelas.length === 0) {
+    return Number(cliente.valor) || 0;
+  }
+  return somaParcelasPagas;
+}
+
+function copiarPix() {
+  const chave = document.getElementById("pixChave").textContent;
+  function avisar() { alert("Chave Pix copiada!"); }
+  function copiarFallback() {
+    const ta = document.createElement("textarea");
+    ta.value = chave;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    avisar();
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(chave).then(avisar).catch(copiarFallback);
+  } else {
+    copiarFallback();
+  }
+}
+
+// Extrai desc / valor unitário / qtd / subtotal de uma linha vinda da Matriz.
+// Formatos aceitos:
+//   "Descrição: R$ 10,00"
+//   "Descrição: R$ 10,00 x 3 = R$ 30,00"
+//   "Descrição" (sem valor)
+function interpretarLinhaItem(linha) {
+  const comQtd = linha.match(/^(.*):\s*(.+?)\s*x\s*(\d+)\s*=\s*(.+)$/i);
+  if (comQtd) {
+    return {
+      desc: comQtd[1].trim(),
+      qtd: comQtd[3].trim(),
+      valorExibido: comQtd[4].trim(),
+    };
+  }
+  const idx = linha.lastIndexOf(":");
+  if (idx > -1) {
+    return {
+      desc: linha.slice(0, idx).trim(),
+      qtd: null,
+      valorExibido: linha.slice(idx + 1).trim(),
+    };
+  }
+  return { desc: linha.trim(), qtd: null, valorExibido: null };
+}
+
+// Formata as linhas enviadas pela matriz para exibição limpa, alinhando
+// descrição à esquerda e valor à direita (com a quantidade quando houver).
+function renderizarItensServico(textoServico) {
+  if (!textoServico) return "<p>Nenhum item especificado.</p>";
+
+  const linhas = textoServico.split("\n").filter((l) => l.trim() !== "");
+  let html = '<div class="lista-itens-servico">';
+
+  linhas.forEach((linha) => {
+    const { desc, qtd, valorExibido } = interpretarLinhaItem(linha);
+    html += `
+      <div class="item-linha">
+        <span class="item-desc">${desc}${qtd ? `<span class="item-qtd">(x${qtd})</span>` : ""}</span>
+        ${valorExibido ? `<span class="item-valor">${valorExibido}</span>` : ""}
+      </div>`;
+  });
+
+  html += "</div>";
+  return html;
+}
+
+function renderizarCliente(cliente, config) {
+  document.getElementById("cabecalho").innerHTML = `
+    <h1>KA-MÃO</h1>
+    <p>Olá, <b>${cliente.nome}</b> 👋</p>
+  `;
+
+  const badgeCondicao =
+    cliente.condicoes === "Pago à vista"
+      ? `<span class="badge badge-verde">PAGO À VISTA</span>`
+      : `<span class="badge badge-laranja">PARCELADO</span>`;
+
+  const totalPago = calcularTotalPago(cliente);
+  const saldo = Math.max(cliente.valor - totalPago, 0);
+
+  const imagensHtml = (cliente.imagens || [])
+    .map((src) => `<img src="${src}" alt="Foto do serviço">`)
+    .join("");
+
+  let parcelasHtml = "";
+  (cliente.parcelas || []).forEach((p, idx) => {
+    const pago = p.status === "pago";
+    parcelasHtml += `
+      <div class="parcela">
+        <span class="ponto ${pago ? "ponto-verde" : "ponto-amarelo"}"></span>
+        <div class="parcela-texto">
+          <div class="parcela-linha1">
+            <span class="parcela-valor-txt">${idx + 1}ª Parcela - R$ ${formatarMoeda(p.valor)}</span>
+          </div>
+          <div class="parcela-data">
+            <span class="${pago ? "status-pago" : "status-aguardando"}">${pago ? "● Paga" : "● Aguardando"}</span>
+            &nbsp;·&nbsp;${pago ? "Pago em " + formatarDataBR(p.data) : "Vence em " + formatarDataBR(p.data)}
+          </div>
+        </div>
+      </div>`;
+  });
+
+  const chavePix = (config && config.chavePix) || "";
+  const pixHtml = chavePix
+    ? `
+    <div class="card verde">
+      <h2>Pagamento via Pix</h2>
+      <p class="pix-chave" id="pixChave">${chavePix}</p>
+      <button type="button" class="btn-copiar-pix" onclick="copiarPix()">Copiar chave Pix</button>
+    </div>`
+    : "";
+
+  document.getElementById("conteudo").innerHTML = `
+    <div class="card">
+      <h2>Cliente</h2>
+      <p class="info-linha"><b>Nome:</b> ${cliente.nome}</p>
+      ${cliente.contato ? `<p class="info-linha"><b>Contato:</b> ${cliente.contato}</p>` : ""}
+      ${cliente.endereco ? `<p class="info-linha"><b>Endereço:</b> ${cliente.endereco}</p>` : ""}
+
+      <div class="divisor"></div>
+
+      <h2>Produto / Serviço</h2>
+      ${renderizarItensServico(cliente.servico)}
+      ${imagensHtml ? `<div class="imagens">${imagensHtml}</div>` : ""}
+    </div>
+
+    <div class="card amarelo">
+      <h2>Pagar por Opção</h2>
+      <p class="info-linha">Opção: ${badgeCondicao}</p>
+      <p class="valor-total">Total da compra: <b>R$ ${formatarMoeda(cliente.valor)}</b></p>
+      <p class="valor-saldo">Saldo: <b>R$ ${formatarMoeda(saldo)}</b></p>
+      ${parcelasHtml || "<p>Nenhuma parcela registrada.</p>"}
+    </div>
+    ${pixHtml}
+  `;
+}
+
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const lista = typeof KAMAO_CLIENTES !== "undefined" ? KAMAO_CLIENTES : [];
+  const config = typeof KAMAO_CONFIG !== "undefined" ? KAMAO_CONFIG : {};
+  const cliente = lista.find((c) => c.id === id);
+
+  if (!id) {
+    document.getElementById("conteudo").innerHTML = '<p class="aviso">Link incompleto. Peça o link correto para a loja.</p>';
+    document.querySelector("header p").textContent = "";
+  } else if (!cliente) {
+    document.getElementById("conteudo").innerHTML = '<p class="aviso">Pedido não encontrado. Verifique o link recebido.</p>';
+    document.querySelector("header p").textContent = "";
+  } else {
+    renderizarCliente(cliente, config);
+  }
+})();
+</script>
+</body>
+</html>
